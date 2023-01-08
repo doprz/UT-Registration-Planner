@@ -1,0 +1,14 @@
+.button {
+    font-size: 1rem;
+    font-weight: bold;
+
+    min-width: 3rem;
+    aspect-ratio: 1;
+    border-radius: 14px;
+
+    color: white;
+
+    &:hover {
+        background-color: #8f4000;
+    }
+}
