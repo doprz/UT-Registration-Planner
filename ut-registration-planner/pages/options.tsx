@@ -112,6 +112,7 @@ const CourseCardEvent = styled("div", {
     flexDirection: "column",
     boxSizing: "border-box",
     zIndex: 2,
+    overflowY: "hidden",
     padding: "0.25rem",
     marginBottom: "2px",
     marginRight: "2px",
