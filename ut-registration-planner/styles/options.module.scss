@@ -18,7 +18,7 @@
 .calendarContainer {
     width: 100%;
     height: 100%;
-    margin: 1rem;
+    padding: 1rem;
     box-sizing: border-box;
 
     display: grid;
@@ -44,6 +44,16 @@
 
     [data-col]:not([data-col="1"]):not([data-col="6"]) {
         border-right: 1px solid lightgrey;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        [data-row]:not([data-row="33"]):not([data-col="1"]):not([data-30min="false"]) {
+            border-bottom: 1px solid #ffffff1f;
+        }
+    
+        [data-col]:not([data-col="1"]):not([data-col="6"]) {
+            border-right: 1px solid #ffffff1f;
+        }
     }
 
     // Grid columns
