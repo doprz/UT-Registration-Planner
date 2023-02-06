@@ -36,3 +36,5 @@ yarn-error.log*
 
 # extension
 /extension/next/
+/extension/index.html
+/extension/options.html
