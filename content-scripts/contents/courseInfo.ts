@@ -38,3 +38,14 @@ const handleModal = (courseUID: string) => {
 //         }
 //     })
 // })
+
+console.log("courseInfo.js loaded")
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        console.log(sender.tab ?
+                    "from a content script:" + sender.tab.url :
+                    "from the extension")
+        console.log(`[cs] ${JSON.stringify(request)}`)
+        handleModal(request.UID)
+    }
+)

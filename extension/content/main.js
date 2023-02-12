@@ -358,8 +358,9 @@ const parseCourseInfo = (row) => {
         status: getCourseText(row, "td[data-th='Status']"),
     }
 
-    addCourseToStorage(course)
+    // addCourseToStorage(course)
     // console.log(course)
+    return course
 }
 
 const buildCourseObject = (row) => {
@@ -477,7 +478,10 @@ initUserCourseList()
 
 $(".UTRP_button").click(function () {
     let courseRow = $(this).closest("tr")
-    parseCourseInfo(courseRow)
+    // parseCourseInfo(courseRow)
+
+    let port = chrome.runtime.connect({name: "modalCourseUID"})
+    port.postMessage({UID: parseCourseInfo(courseRow).uid})
 })
 
 chrome.storage.onChanged.addListener((changes) => {

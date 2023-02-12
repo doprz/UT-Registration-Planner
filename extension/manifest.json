@@ -25,7 +25,7 @@
     "content_scripts": [
         {
             "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"],
-            "js": ["content/lib/jquery-3.6.0.min.js", "content/main.js"]
+            "js": ["content/lib/jquery-3.6.0.min.js", "content/main.js", "content/courseInfo.js"]
         }
     ]
 }
