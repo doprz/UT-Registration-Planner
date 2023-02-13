@@ -61,7 +61,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
 console.log("background.js loaded")
 chrome.runtime.onConnect.addListener(function (port) {
     console.log(`Connected on port: ${port}`)
-    console.assert(port.name === "modalCourseUID")
+    console.assert(port.name === "modalCourse")
     port.onMessage.addListener(function (msg) {
         console.log(`[bg] ${JSON.stringify(msg)}`)
 

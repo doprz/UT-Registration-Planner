@@ -59,7 +59,7 @@ ReactDOM.createRoot(shadowRootElement).render(
         <CacheProvider value={cache}>
             <ThemeProvider theme={theme}>
                 <BasicModal />
-                <Box sx={{ width: "100%", maxWidth: 500 }}>
+                {/* <Box sx={{ width: "100%", maxWidth: 500 }}>
                     <Typography variant="h1" gutterBottom>
                         h1. Heading
                     </Typography>
@@ -109,7 +109,7 @@ ReactDOM.createRoot(shadowRootElement).render(
                     <Typography variant="overline" display="block" gutterBottom>
                         overline text
                     </Typography>
-                </Box>
+                </Box> */}
             </ThemeProvider>
         </CacheProvider>
     </React.StrictMode>

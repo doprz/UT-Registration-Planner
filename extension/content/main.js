@@ -480,8 +480,8 @@ $(".UTRP_button").click(function () {
     let courseRow = $(this).closest("tr")
     // parseCourseInfo(courseRow)
 
-    let port = chrome.runtime.connect({name: "modalCourseUID"})
-    port.postMessage({UID: parseCourseInfo(courseRow).uid})
+    let port = chrome.runtime.connect({name: "modalCourse"})
+    port.postMessage({modalCourse: parseCourseInfo(courseRow)})
 })
 
 chrome.storage.onChanged.addListener((changes) => {
