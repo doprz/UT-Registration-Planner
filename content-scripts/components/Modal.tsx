@@ -1,12 +1,15 @@
 import createCache from "@emotion/cache"
 import { CacheProvider } from "@emotion/react"
 import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
 import Modal from "@mui/material/Modal"
+import Skeleton from "@mui/material/Skeleton"
 import Typography from "@mui/material/Typography"
+import { styled } from "@mui/material/styles"
 import axios from "axios"
 import cheerio from "cheerio"
 import * as React from "react"
+
+import QuickActionButton from "./QuickActionButton"
 
 interface CourseDateTimeObj {
     regular: {
@@ -40,9 +43,20 @@ const style = {
     left: "50%",
     transform: "translate(-50%, -50%)",
     bgcolor: "background.paper",
+    outline: "none",
     boxShadow: 24,
     p: 4
 }
+
+const CustomizedButtonDiv = styled("div")`
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+
+    margin-top: auto;
+    padding: 12px 0;
+`
 
 const BasicModal = () => {
     const [open, setOpen] = React.useState(false)
@@ -118,6 +132,10 @@ const BasicModal = () => {
                         <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
                         <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
                         {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
+                        <CustomizedButtonDiv>
+                            <QuickActionButton tooltip="Add Course">Add Course</QuickActionButton>
+                            <QuickActionButton tooltip="Rate My Professor">RMP</QuickActionButton>
+                        </CustomizedButtonDiv>
                         {courseDescription.map((value, index) => {
                             return (
                                 <Typography id={`modal-modal-description-${index}`} key={index} sx={{ mt: 2 }} variant="body1" gutterBottom>
@@ -125,6 +143,7 @@ const BasicModal = () => {
                                 </Typography>
                             )
                         })}
+                        <Skeleton variant="rounded" animation="wave" height={256}/>
                     </>
                 )}
             </Box>
