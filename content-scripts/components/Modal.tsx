@@ -104,7 +104,9 @@ const BasicModal = () => {
                 console.log(`[cs] ${JSON.stringify(request)}`)
 
                 try {
-                    handleModal(request.modalCourse)
+                    if (request.modalCourse) {
+                        handleModal(request.modalCourse)
+                    }
                 } catch (error) {
                     console.warn(error)
                 }
@@ -133,8 +135,19 @@ const BasicModal = () => {
                         <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
                         {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
                         <CustomizedButtonDiv>
-                            <QuickActionButton tooltip="Add Course">Add Course</QuickActionButton>
-                            <QuickActionButton tooltip="Rate My Professor">RMP</QuickActionButton>
+                            <QuickActionButton tooltip="Add Course" onClick={() => {
+                                console.log("Add Course button pressed")
+                            }}>Add Course</QuickActionButton>
+                            <QuickActionButton tooltip="Rate My Professor" onClick={() => {
+                                console.log(`RMP button pressed`)
+                                course.instructor.map((instructor) => {
+                                    const instructorString = instructor.replace(/\s/g, '%20')
+                                    const url = `https://www.ratemyprofessors.com/search/teachers?query=${instructorString}&sid=U2Nob29sLTEyNTU=`
+                                    
+                                    let port = chrome.runtime.connect({name: "openURL"})
+                                    port.postMessage({url: url})
+                                })
+                            }}>RMP</QuickActionButton>
                         </CustomizedButtonDiv>
                         {courseDescription.map((value, index) => {
                             return (

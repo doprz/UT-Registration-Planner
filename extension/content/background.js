@@ -58,17 +58,27 @@ chrome.runtime.onInstalled.addListener(function (details) {
 //     }
 // })
 
+const openNewTab = (url) => {
+    chrome.tabs.create({
+        url: url,
+    })
+}
+
 console.log("background.js loaded")
 chrome.runtime.onConnect.addListener(function (port) {
     console.log(`Connected on port: ${port}`)
-    console.assert(port.name === "modalCourse")
+    // console.assert(port.name === "modalCourse")
     port.onMessage.addListener(function (msg) {
         console.log(`[bg] ${JSON.stringify(msg)}`)
 
-        // port.postMessage(msg)
-        console.log(`Relayed ${JSON.stringify(msg)} from bg`)
-        chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, msg)
-        })
+        if (port.name === "openURL") {
+            openNewTab(msg.url)
+        } else {
+            // port.postMessage(msg)
+            console.log(`Relayed ${JSON.stringify(msg)} from bg`)
+            chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, msg)
+            })
+        }
     })
 })
