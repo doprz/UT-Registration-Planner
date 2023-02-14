@@ -160,27 +160,25 @@ const BasicModal = () => {
                         <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
                         {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
                         <CustomizedButtonDiv>
-                            <QuickActionButton tooltip="Add Course" onClick={() => {
-                                addCourseToStorage(course, userCourseList)
-                            }}>
-                                {objInArray(course, userCourseList, "uid") ? (
-                                    <>
-                                        <DoneIcon sx={{paddingRight: "16px"}}/>Course Added
-                                    </>
-                                ) : (
-                                    <>
-                                        {courseDateTimeConflictArr(course, userCourseList) ? (
-                                            <>
-                                                <BlockIcon sx={{paddingRight: "16px"}}/>Course Conflict
-                                            </>
-                                            ) : (
-                                            <>
+                            {objInArray(course, userCourseList, "uid") ? (
+                                <QuickActionButton tooltip="Course Added">
+                                    <DoneIcon sx={{paddingRight: "16px"}}/>Course Added
+                                </QuickActionButton>
+                            ) : (
+                                <>
+                                    {courseDateTimeConflictArr(course, userCourseList) ? (
+                                        <QuickActionButton tooltip="Course Conflict">
+                                            <BlockIcon sx={{paddingRight: "16px"}}/>Course Conflict
+                                        </QuickActionButton>
+                                        ) : (
+                                            <QuickActionButton tooltip="Add Course" onClick={() => {
+                                                addCourseToStorage(course, userCourseList)
+                                            }}>
                                                 <AddIcon sx={{paddingRight: "16px"}}/>Add Course
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </QuickActionButton>
+                                            </QuickActionButton>
+                                    )}
+                                </>
+                            )}
                             <QuickActionButton tooltip="Rate My Professor" onClick={() => {
                                 console.log(`RMP button pressed`)
                                 course.instructor.map((instructor) => {
