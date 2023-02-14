@@ -15,7 +15,7 @@ import BlockIcon from '@mui/icons-material/Block'
 
 import QuickActionButton from "./QuickActionButton"
 
-import { getStorage, setStorage, addCourseToStorage, objInArray, courseDateTimeConflictArr } from "../utils/chromeStorage"
+import { getStorage, setStorage, addCourseToStorage, objInArray, courseDateTimeConflictArr, removeCourseFromStorage } from "../utils/chromeStorage"
 
 interface CourseDateTimeObj {
     regular: {
@@ -161,7 +161,9 @@ const BasicModal = () => {
                         {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
                         <CustomizedButtonDiv>
                             {objInArray(course, userCourseList, "uid") ? (
-                                <QuickActionButton tooltip="Course Added">
+                                <QuickActionButton tooltip="Course Added" onClick={() => {
+                                    removeCourseFromStorage(course.uid, userCourseList)
+                                }}>
                                     <DoneIcon sx={{paddingRight: "16px"}}/>Course Added
                                 </QuickActionButton>
                             ) : (

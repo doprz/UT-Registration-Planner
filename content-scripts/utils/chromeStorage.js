@@ -241,3 +241,13 @@ export const addCourseToStorage = async (course, courseListArray) => {
         console.error(error)
     }
 }
+
+export const removeCourseFromStorage = async (c_uid, courseListArray) => {
+    const _courseListArray = courseListArray.filter((c) => c.uid !== c_uid)
+
+    try {
+        await setStorage({ userCourseList: _courseListArray })
+    } catch (error) {
+        console.error(error)
+    }
+}
