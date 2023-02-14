@@ -12,7 +12,7 @@ import type { PlasmoGetRootContainer } from "plasmo"
 import React from "react"
 import ReactDOM from "react-dom/client"
 
-import BasicModal from "../components/Modal"
+import CSUI from "../components/CSUI"
 
 export const getRootContainer = () =>
     document.getElementById("utrp-content-root")
@@ -58,7 +58,7 @@ ReactDOM.createRoot(shadowRootElement).render(
         <ScopedCssBaseline />
         <CacheProvider value={cache}>
             <ThemeProvider theme={theme}>
-                <BasicModal />
+                <CSUI />
                 {/* <Box sx={{ width: "100%", maxWidth: 500 }}>
                     <Typography variant="h1" gutterBottom>
                         h1. Heading
