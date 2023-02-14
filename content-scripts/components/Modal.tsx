@@ -9,7 +9,13 @@ import axios from "axios"
 import cheerio from "cheerio"
 import * as React from "react"
 
+import AddIcon from '@mui/icons-material/Add'
+import DoneIcon from '@mui/icons-material/Done'
+import BlockIcon from '@mui/icons-material/Block'
+
 import QuickActionButton from "./QuickActionButton"
+
+import { getStorage, setStorage, addCourseToStorage, objInArray, courseDateTimeConflictArr } from "../utils/chromeStorage"
 
 interface CourseDateTimeObj {
     regular: {
@@ -63,6 +69,7 @@ const BasicModal = () => {
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
+    const [userCourseList, setUserCourseList] = React.useState<Course[]>([])
     const [course, setCourse] = React.useState<Course | null>(null)
     const [courseName, setCourseName] = React.useState<string>("")
     const [courseDescription, setCourseDescription] = React.useState<string[]>([])
@@ -112,6 +119,24 @@ const BasicModal = () => {
                 }
             }
         )
+
+        const getUserCourseList = async () => {
+            try {
+                const l_userCourseList: Course[] = await getStorage(
+                    "userCourseList"
+                )
+                setUserCourseList(l_userCourseList)
+                // console.log(userCourseList)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        getUserCourseList()
+
+        chrome.storage.onChanged.addListener((changes) => {
+            // console.log(changes)
+            getUserCourseList()
+        })
     }, [])
     
 
@@ -136,8 +161,26 @@ const BasicModal = () => {
                         {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
                         <CustomizedButtonDiv>
                             <QuickActionButton tooltip="Add Course" onClick={() => {
-                                console.log("Add Course button pressed")
-                            }}>Add Course</QuickActionButton>
+                                addCourseToStorage(course, userCourseList)
+                            }}>
+                                {objInArray(course, userCourseList, "uid") ? (
+                                    <>
+                                        <DoneIcon sx={{paddingRight: "16px"}}/>Course Added
+                                    </>
+                                ) : (
+                                    <>
+                                        {courseDateTimeConflictArr(course, userCourseList) ? (
+                                            <>
+                                                <BlockIcon sx={{paddingRight: "16px"}}/>Course Conflict
+                                            </>
+                                            ) : (
+                                            <>
+                                                <AddIcon sx={{paddingRight: "16px"}}/>Add Course
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </QuickActionButton>
                             <QuickActionButton tooltip="Rate My Professor" onClick={() => {
                                 console.log(`RMP button pressed`)
                                 course.instructor.map((instructor) => {
