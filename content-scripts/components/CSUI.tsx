@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal"
 import Skeleton from "@mui/material/Skeleton"
 import Typography from "@mui/material/Typography"
 import Snackbar from '@mui/material/Snackbar'
+import Chip from '@mui/material/Chip'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { styled } from "@mui/material/styles"
 import axios from "axios"
@@ -79,6 +80,29 @@ const CustomizedButtonDiv = styled("div")`
     padding: 12px 0;
 `
 
+const CustomizedChipFlag = styled(Chip)`
+    background-color: #fac35b;
+    color: black;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    & .MuiChip-label {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 0;
+    }
+`
+const CustomizedChipCore = styled(Chip)`
+    background-color: #005f86;
+    color: white;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    & .MuiChip-label {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 0;
+    }
+`
+
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
@@ -91,13 +115,21 @@ const CSUI = () => {
     const [snackPack, setSnackPack] = React.useState<readonly SnackbarMessage[]>([])
     const [openSnackbar, setOpenSnackbar] = React.useState(false)
     const [messageInfoSnackbar, setMessageInfoSnackbar] = React.useState<SnackbarMessage | undefined>(undefined)
-    const [snackbarseverity_tmp, setsnackbarSeverity_tmp] = React.useState<"error" | "warning" | "info" | "success">(undefined)
-    const [snackbarseverity, setsnackbarSeverity] = React.useState<"error" | "warning" | "info" | "success">(undefined)
+    const [snackbarSeverity_tmp, setSnackbarSeverity_tmp] = React.useState<"error" | "warning" | "info" | "success">(undefined)
+    const [snackbarSeverity, setSnackbarSeverity] = React.useState<"error" | "warning" | "info" | "success">(undefined)
+    const snackbarSeverityColorMap = new Map<string, string>([
+        ["error", "#d32f2f"],
+        ["warning", "#f8971f"],
+        ["info", "#005f86"],
+        ["success", "#579d42"],
+    ])
 
     const [userCourseList, setUserCourseList] = React.useState<Course[]>([])
     const [course, setCourse] = React.useState<Course | null>(null)
     const [courseName, setCourseName] = React.useState<string>("")
     const [courseDescription, setCourseDescription] = React.useState<string[]>([])
+    const [courseFlags, setCourseFlags] = React.useState<string[]>([])
+    const [courseCore, setCourseCore] = React.useState<string[]>([])
 
     const handleModal = (course: Course) => {
         setCourse(course)
@@ -116,13 +148,24 @@ const CSUI = () => {
                 .toArray()
                 // .join()
     
-            console.log(courseUID)
-            console.log(name)
-            console.log(info)
+            // console.log(courseUID)
+            // console.log(name)
+            // console.log(info)
 
             setCourseName(name)
             setCourseDescription(info)
             handleOpen()
+
+            const flags = $(".flag").children().map((_, e) => {
+                return e.attribs.class
+            }).toArray()
+            setCourseFlags(flags)
+
+            const core = $(".core").children().map((_, e) => {
+                return e.attribs.class
+            }).toArray()
+            setCourseCore(core)
+
         })
     }
 
@@ -184,7 +227,7 @@ const CSUI = () => {
             // Set a new snack when we don't have an active one
             setMessageInfoSnackbar({ ...snackPack[0] })
             setSnackPack((prev) => prev.slice(1))
-            setsnackbarSeverity(snackbarseverity_tmp)
+            setSnackbarSeverity(snackbarSeverity_tmp)
             setOpenSnackbar(true)
         } else if (snackPack.length && messageInfoSnackbar && openSnackbar) {
             // Close an active snack when a new one is added
@@ -214,7 +257,7 @@ const CSUI = () => {
                     </React.Fragment>
                 }
             >
-                <Alert onClose={handleCloseSnackbar} severity={snackbarseverity || "info"} sx={{ width: '100%' }}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity || "info"} sx={{ width: '100%', backgroundColor: `${snackbarSeverityColorMap.get(snackbarSeverity || "info")}` }}>
                     <Typography variant="body1">
                         {messageInfoSnackbar ? messageInfoSnackbar.message : undefined}
                     </Typography>
@@ -232,19 +275,40 @@ const CSUI = () => {
                                 id="modal-modal-title"
                                 variant="h5"
                                 component="h2"
-                                fontWeight={"bold"}>
+                                fontWeight={"bold"}
+                                gutterBottom>
                                 {`${courseName} (${course.uid})`}
                             </Typography>
-                            <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
-                            <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
-                            {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
+                            <div className="course-info" style={{display: "flex", gap: "1rem"}}>
+                                <div className="course-details">
+                                    <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
+                                    <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
+                                    {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
+                                </div>
+                                <div className="course-flags-core" style={{display: "flex", gap: "1rem"}}>
+                                    <div className="course-flags" style={{display: "flex", gap: "0.5rem"}}>
+                                        {courseFlags.map((f) => {
+                                            return (
+                                                <CustomizedChipFlag label={f}/>
+                                            )
+                                        })}
+                                    </div>
+                                    <div className="course-core" style={{display: "flex", gap: "0.5rem"}}>
+                                        {courseCore.map((c) => {
+                                            return (
+                                                <CustomizedChipCore label={c}/>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
                             <CustomizedButtonDiv>
                                 {objInArray(course, userCourseList, "uid") ? (
                                     <QuickActionButton tooltip="Course Added" onClick={() => {
                                         removeCourseFromStorage(course.uid, userCourseList)
 
                                         handleClickSnackbar("Course Removed")
-                                        setsnackbarSeverity_tmp("error")
+                                        setSnackbarSeverity_tmp("error")
                                     }}>
                                         <DoneIcon sx={{paddingRight: "16px"}}/>Course Added
                                     </QuickActionButton>
@@ -253,7 +317,7 @@ const CSUI = () => {
                                         {courseDateTimeConflictArr(course, userCourseList) ? (
                                             <QuickActionButton tooltip="Course Conflict" onClick={() => {
                                                 handleClickSnackbar("Course Conflict")
-                                                setsnackbarSeverity_tmp("warning")
+                                                setSnackbarSeverity_tmp("warning")
                                             }}>
                                                 <BlockIcon sx={{paddingRight: "16px"}}/>Course Conflict
                                             </QuickActionButton>
@@ -262,7 +326,7 @@ const CSUI = () => {
                                                     addCourseToStorage(course, userCourseList)
 
                                                     handleClickSnackbar("Course Added")
-                                                    setsnackbarSeverity_tmp("success")
+                                                    setSnackbarSeverity_tmp("success")
                                                 }}>
                                                     <AddIcon sx={{paddingRight: "16px"}}/>Add Course
                                                 </QuickActionButton>
