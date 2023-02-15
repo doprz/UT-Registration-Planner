@@ -103,9 +103,63 @@ const CustomizedChipCore = styled(Chip)`
     }
 `
 
+const CustomizedCourseLocationLink = styled("a")`
+    color: #bf5700;
+    font-weight: bold;
+
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+`
+
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
 })
+
+const getCourseBuilding = (text: string): string => {
+    return (text && (text !== "n/a")) ? (text.match(/[^\s]+/)![0] ?? "n/a") : "n/a"
+}
+
+const buildCourseLocationLink = (building: string): string => {
+    return `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}/`
+}
+
+const renderCourseDetails = (_course: Course) => {
+    const courseBuilding_regular = getCourseBuilding(_course.time.regular.room)
+    const courseLocationLink_regular = (courseBuilding_regular && (courseBuilding_regular !== "n/a")) ? buildCourseLocationLink(courseBuilding_regular) : "n/a"
+
+    const courseBuilding_additional = getCourseBuilding(_course.time?.additional?.room)
+    const courseLocationLink_additional = (courseBuilding_additional && (courseBuilding_additional !== "n/a")) ? buildCourseLocationLink(courseBuilding_additional) : "n/a"
+
+    return (
+        <>
+            <Typography variant="h6" component="h3">{`${_course.instructor} | ${_course.status} | ${_course.mode}`}</Typography>
+            <Typography variant="h6" component="h3">
+                {`${_course.time.regular.days} | ${_course.time.regular.hour}${(courseLocationLink_regular && (courseLocationLink_regular !== "n/a")) ? " | " : ""}`}
+                {(courseLocationLink_regular && (courseLocationLink_regular !== "n/a")) && <CustomizedCourseLocationLink onClick={() => {
+                    let port = chrome.runtime.connect({name: "openURL"})
+                    port.postMessage({url: courseLocationLink_regular})
+                    // console.log("Regular Course Location Link Pressed")
+                }}>
+                    {`${_course.time.regular.room}`}
+                </CustomizedCourseLocationLink>}
+            </Typography>
+            {_course?.time?.additional && (
+                <Typography variant="h6" component="h3">
+                    {`${_course.time.additional.days} | ${_course.time.additional.hour}${(courseLocationLink_additional && (courseLocationLink_additional !== "n/a")) ? " | " : ""}`}
+                    {(courseLocationLink_additional && (courseLocationLink_additional !== "n/a")) && <CustomizedCourseLocationLink onClick={() => {
+                        let port = chrome.runtime.connect({name: "openURL"})
+                        port.postMessage({url: courseLocationLink_additional})
+                        // console.log("Additional Course Location Link Pressed")
+                    }}>
+                        {`${_course.time.additional.room}`}
+                    </CustomizedCourseLocationLink>}
+                </Typography>
+            )}
+        </>
+    )
+}
 
 const CSUI = () => {
     const [open, setOpen] = React.useState(false)
@@ -281,9 +335,10 @@ const CSUI = () => {
                             </Typography>
                             <div className="course-info" style={{display: "flex", gap: "1rem"}}>
                                 <div className="course-details">
-                                    <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
+                                    {/* <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
                                     <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
-                                    {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)}
+                                    {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)} */}
+                                    {renderCourseDetails(course)}
                                 </div>
                                 <div className="course-flags-core" style={{display: "flex", gap: "1rem"}}>
                                     <div className="course-flags" style={{display: "flex", gap: "0.5rem"}}>
