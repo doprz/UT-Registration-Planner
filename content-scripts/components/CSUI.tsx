@@ -52,7 +52,7 @@ interface Course {
     fullName: string
     creditHours: number
     instructor: string[]
-    uid: number
+    uid: string
     status: string
     time: CourseDateTimeObj
     mode?: string

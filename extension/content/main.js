@@ -348,7 +348,7 @@ const parseCourseInfo = (row) => {
     } = separateCourseFullText(courseFullName)
 
     let course = {
-        uid: Number(getCourseText(row, "td[data-th='Unique']")),
+        uid: getCourseText(row, "td[data-th='Unique']"),
         name: name,
         fullName: fullName,
         creditHours: creditHours,
