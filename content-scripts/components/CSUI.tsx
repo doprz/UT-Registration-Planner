@@ -135,7 +135,7 @@ const buildCourseLocationLink = (building: string): string => {
     return `https://utdirect.utexas.edu/apps/campus/buildings/nlogon/maps/UTM/${building}/`
 }
 
-const renderCourseDetails = (_course: Course) => {
+const RenderCourseDetails = ({_course}: {_course: Course}) => {
     const courseBuilding_regular = getCourseBuilding(_course.time.regular.room)
     const courseLocationLink_regular = (courseBuilding_regular && (courseBuilding_regular !== "n/a")) ? buildCourseLocationLink(courseBuilding_regular) : "n/a"
 
@@ -445,7 +445,7 @@ const CSUI = () => {
                                     {/* <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
                                     <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
                                     {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)} */}
-                                    {renderCourseDetails(course)}
+                                    <RenderCourseDetails _course={course} />
                                 </div>
                                 <div className="course-flags-core" style={{display: "flex", gap: "1rem"}}>
                                     <div className="course-flags" style={{display: "flex", gap: "0.5rem"}}>
