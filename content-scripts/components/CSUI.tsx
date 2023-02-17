@@ -1,5 +1,3 @@
-import createCache from "@emotion/cache"
-import { CacheProvider } from "@emotion/react"
 import Box from "@mui/material/Box"
 import Modal from "@mui/material/Modal"
 import Skeleton from "@mui/material/Skeleton"
@@ -9,7 +7,7 @@ import Chip from '@mui/material/Chip'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { styled } from "@mui/material/styles"
 import axios from "axios"
-import cheerio from "cheerio"
+import * as cheerio from "cheerio"
 import * as React from "react"
 
 import AddIcon from '@mui/icons-material/Add'
