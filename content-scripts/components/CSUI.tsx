@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import QuickActionButton from "./QuickActionButton"
 
+import initSqlJs from "sql.js"
 import { getStorage, setStorage, addCourseToStorage, objInArray, courseDateTimeConflictArr, removeCourseFromStorage } from "../utils/chromeStorage"
 
 interface CourseDateTimeObj {
@@ -178,6 +179,7 @@ const CSUI = () => {
         ["success", "#579d42"],
     ])
 
+    const [db, setDb] = React.useState<any>()
     const [userCourseList, setUserCourseList] = React.useState<Course[]>([])
     const [course, setCourse] = React.useState<Course | null>(null)
     const [courseName, setCourseName] = React.useState<string>("")
@@ -185,7 +187,7 @@ const CSUI = () => {
     const [courseFlags, setCourseFlags] = React.useState<string[]>([])
     const [courseCore, setCourseCore] = React.useState<string[]>([])
 
-    const handleModal = (course: Course) => {
+    const handleModal = (course: Course, l_db: any) => {
         setCourse(course)
         console.log(course)
         const courseUID = course.uid
@@ -221,10 +223,67 @@ const CSUI = () => {
             setCourseCore(core)
 
         })
+        
+        // Make sure db is loaded
+        if (l_db) {
+            const dept = course.name.match(/(.+?)\s\d{3}[^ ]?/)[1]
+            const course_nbr = course.name.match(/.+?(\d{3}[^ ]?)/)[1]
+            const cmd = `SELECT * FROM \'agg\' WHERE dept = \'${dept}\' and course_nbr = \'${course_nbr}\' and prof = \'${course.instructor[0]}\'`
+            try {
+                console.log(cmd)
+                console.log(l_db)
+
+                const contents = l_db.exec(cmd)
+                if (contents) {
+                    if (contents[0].values.length > 1) {
+                        console.log("Showing contents[0]")
+                        console.log(contents[0])
+
+                        console.log("Showing contents[0].values[0]")
+                        console.log(contents[0].values[0])
+                        console.table(contents[0].values[0])
+                    } else {
+                        console.log("Showing contents[0]")
+                        console.log(contents[0])
+                        console.table(contents[0])
+                    }
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+
+        // console.log("l_db from handleModal")
+        // console.log(l_db)
     }
 
     React.useEffect(() => {
         console.log("Modal.js loaded")
+        let l_db
+
+        // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
+        // without any configuration, initSqlJs will fetch the wasm files directly from the same path as the js
+        const initDB = async () => {
+            try {
+                const sqlWasm = chrome.runtime.getURL("content/assets/sql-wasm.wasm")
+                const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm })
+                const dataPromise = fetch("https://cdn.jsdelivr.net/gh/UT-Natural-Sciences-Council/database@1.0.0/updatedgrades.db").then(res => res.arrayBuffer())
+                const [SQL, buf] = await Promise.all([sqlPromise, dataPromise])
+                const db = new SQL.Database(new Uint8Array(buf))
+                return db
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        initDB()
+            .then((db) => {
+                setDb(db)
+                l_db = db
+                console.log("setDb from .then")
+                // console.log(db)
+            })
+            .catch(err => console.error(err))
+
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
                 console.log(sender.tab ?
@@ -234,7 +293,8 @@ const CSUI = () => {
 
                 try {
                     if (request.modalCourse) {
-                        handleModal(request.modalCourse)
+                        console.log("handleModal called")
+                        handleModal(request.modalCourse, l_db)
                     }
                 } catch (error) {
                     console.warn(error)
@@ -260,6 +320,11 @@ const CSUI = () => {
             getUserCourseList()
         })
     }, [])
+
+    React.useEffect(() => {
+        console.log("db updated from useEffect")
+        console.log(db)
+    }, [db])
 
     const handleClickSnackbar = (message: string) => {
         setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }])
