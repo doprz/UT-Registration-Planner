@@ -19,6 +19,10 @@
     },
     "options_page": "options.html",
     "permissions": ["storage"],
+    "web_accessible_resources": [{
+        "resources": ["content/assets/sql-wasm.wasm"],
+        "matches": ["<all_urls>"]
+    }],
     "background": {
         "service_worker": "content/background.js"
     },

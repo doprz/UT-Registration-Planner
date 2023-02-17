@@ -20,7 +20,19 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import QuickActionButton from "./QuickActionButton"
 
+import initSqlJs from "sql.js"
 import { getStorage, setStorage, addCourseToStorage, objInArray, courseDateTimeConflictArr, removeCourseFromStorage } from "../utils/chromeStorage"
+
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer
+} from "recharts"
 
 interface CourseDateTimeObj {
     regular: {
@@ -40,7 +52,7 @@ interface Course {
     fullName: string
     creditHours: number
     instructor: string[]
-    uid: number
+    uid: string
     status: string
     time: CourseDateTimeObj
     mode?: string
@@ -164,7 +176,10 @@ const renderCourseDetails = (_course: Course) => {
 const CSUI = () => {
     const [open, setOpen] = React.useState(false)
     const handleOpen = () => setOpen(true)
-    const handleClose = () => setOpen(false)
+    const handleClose = () => {
+        setOpen(false)
+        setGradeDistData([])
+    }
 
     const [snackPack, setSnackPack] = React.useState<readonly SnackbarMessage[]>([])
     const [openSnackbar, setOpenSnackbar] = React.useState(false)
@@ -178,6 +193,24 @@ const CSUI = () => {
         ["success", "#579d42"],
     ])
 
+    const [db, setDb] = React.useState<any>(null)
+    const [gradeDistData, setGradeDistData] = React.useState([])
+    const gradeDistDataMap = new Map<string, string>([
+        ["a1", "A+"],
+        ["a2", "A"],
+        ["a3", "A-"],
+        ["b1", "B+"],
+        ["b2", "B"],
+        ["b3", "B-"],
+        ["c1", "C+"],
+        ["c2", "C"],
+        ["c3", "C-"],
+        ["d1", "D+"],
+        ["d2", "D"],
+        ["d3", "D-"],
+        ["f", "F"]
+    ])
+
     const [userCourseList, setUserCourseList] = React.useState<Course[]>([])
     const [course, setCourse] = React.useState<Course | null>(null)
     const [courseName, setCourseName] = React.useState<string>("")
@@ -185,7 +218,7 @@ const CSUI = () => {
     const [courseFlags, setCourseFlags] = React.useState<string[]>([])
     const [courseCore, setCourseCore] = React.useState<string[]>([])
 
-    const handleModal = (course: Course) => {
+    const handleModal = (course: Course, l_db: any) => {
         setCourse(course)
         console.log(course)
         const courseUID = course.uid
@@ -221,10 +254,75 @@ const CSUI = () => {
             setCourseCore(core)
 
         })
+        
+        // Make sure db is loaded
+        if (l_db) {
+            const dept = course.name.match(/(.+?)\s\d{3}[^ ]?/)[1]
+            const course_nbr = course.name.match(/.+?(\d{3}[^ ]?)/)[1]
+            const cmd = `SELECT * FROM \'agg\' WHERE dept = \'${dept}\' and course_nbr = \'${course_nbr}\' and prof = \'${course.instructor[0]}\'`
+            try {
+                console.log(cmd)
+                console.log(l_db)
+
+                const contents = l_db.exec(cmd)
+                if (contents) {
+                    if (contents[0]) {
+                        console.log("Showing contents[0]")
+                        console.log(contents[0])
+                        if (contents[0].values.length > 1) {
+                            console.log("Showing contents[0].values[0]")
+                            console.log(contents[0].values[0])
+                            console.table(contents[0].values[0])
+    
+                            let arr = []
+                            contents[0].columns.map((n, i) => {
+                                if (i > 5 && i < 18) {
+                                    arr.push({
+                                        name: gradeDistDataMap.get(n),
+                                        "Students": contents[0].values[0][i],
+                                    })
+                                }
+                            })
+                            setGradeDistData(arr)
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+
+        // console.log("l_db from handleModal")
+        // console.log(l_db)
     }
 
     React.useEffect(() => {
         console.log("Modal.js loaded")
+        let l_db: any = null
+
+        // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
+        // without any configuration, initSqlJs will fetch the wasm files directly from the same path as the js
+        const initDB = async () => {
+            try {
+                const sqlWasm = chrome.runtime.getURL("content/assets/sql-wasm.wasm")
+                const sqlPromise = await initSqlJs({ locateFile: () => sqlWasm })
+                const dataPromise = fetch("https://cdn.jsdelivr.net/gh/UT-Natural-Sciences-Council/database@1.0.0/updatedgrades.db").then(res => res.arrayBuffer())
+                const [SQL, buf] = await Promise.all([sqlPromise, dataPromise])
+                const db = new SQL.Database(new Uint8Array(buf))
+                return db
+            } catch (err) {
+                console.error(err)
+            }
+        }
+        initDB()
+            .then((db) => {
+                setDb(db)
+                l_db = db
+                console.log("setDb from .then")
+                console.log(db)
+            })
+            .catch(err => console.error(err))
+
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
                 console.log(sender.tab ?
@@ -234,7 +332,8 @@ const CSUI = () => {
 
                 try {
                     if (request.modalCourse) {
-                        handleModal(request.modalCourse)
+                        console.log("handleModal called")
+                        handleModal(request.modalCourse, l_db)
                     }
                 } catch (error) {
                     console.warn(error)
@@ -260,6 +359,16 @@ const CSUI = () => {
             getUserCourseList()
         })
     }, [])
+
+    React.useEffect(() => {
+        console.log("db updated from useEffect")
+        console.log(db)
+    }, [db])
+
+    React.useEffect(() => {
+        console.log("gradeDistData updated from useEffect")
+        console.log(gradeDistData)
+    }, [gradeDistData])
 
     const handleClickSnackbar = (message: string) => {
         setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }])
@@ -406,7 +515,42 @@ const CSUI = () => {
                                     </Typography>
                                 )
                             })}
-                            <Skeleton variant="rounded" animation="wave" height={256}/>
+                            {db ? (
+                                <>
+                                    {gradeDistData.length > 0 ? (
+                                        <div style={{ paddingTop: "20px" }}>
+                                            <Typography variant="h5" component="h2" gutterBottom>Course Grade Distribution</Typography>
+                                            <ResponsiveContainer width="100%" aspect={3.0 / 1.0}>
+                                                <BarChart
+                                                    data={gradeDistData}
+                                                    margin={{
+                                                        top: 0,
+                                                        right: 40,
+                                                        left: 0,
+                                                        bottom: 0
+                                                    }}
+                                                >
+                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                    <XAxis dataKey="name" />
+                                                    <YAxis />
+                                                    <Tooltip wrapperStyle={{ outline: "none" }} />
+                                                    <Legend />
+                                                    <Bar dataKey="Students" fill="#bf5700" />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        ) : (
+                                            <div style={{ paddingTop: "20px" }}>
+                                                <Typography variant="h5" component="h2">Course Grade Distribution Data Not Found</Typography>
+                                            </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div style={{ paddingTop: "20px" }}>
+                                    <Typography variant="h5" component="h2">Loading Course Grade Distribution Database...</Typography>
+                                    <Skeleton variant="rounded" animation="wave" height={256} />
+                                </div>
+                            )}
                         </>
                     )}
                 </Box>
