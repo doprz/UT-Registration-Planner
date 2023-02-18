@@ -6,6 +6,7 @@ import {
     ThemeProvider,
     createTheme
 } from "@mui/material/styles"
+import type { PlasmoRender } from "plasmo"
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
 
@@ -50,14 +51,16 @@ const theme = createTheme({
     }
 })
 
-const root = ReactDOM.createRoot(shadowRootElement)
-root.render(
-    <React.StrictMode>
-        <ScopedCssBaseline />
-        <CacheProvider value={cache}>
-            <ThemeProvider theme={theme}>
-                <CSUI />
-            </ThemeProvider>
-        </CacheProvider>
-    </React.StrictMode>
-)
+export const render: PlasmoRender = () => {
+    const root = ReactDOM.createRoot(shadowRootElement)
+    root.render(
+        <React.StrictMode>
+            <ScopedCssBaseline />
+            <CacheProvider value={cache}>
+                <ThemeProvider theme={theme}>
+                    <CSUI />
+                </ThemeProvider>
+            </CacheProvider>
+        </React.StrictMode>
+    )
+}
