@@ -505,6 +505,15 @@ const CSUI = () => {
                                         port.postMessage({url: url})
                                     })
                                 }}>RMP</QuickActionButton>
+                                <QuickActionButton tooltip="Syllabi" onClick={() => {
+                                    console.log(`Syllabi button pressed`)
+                                    const department = course.name.match(/(.+?)\s\d{3}[^ ]?/)[1].replace(/\s/g, '+')
+                                    const course_nbr = course.name.match(/.+?(\d{3}[^ ]?)/)[1]
+                                    const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${course_nbr}&course_title=&unique=${course.uid}&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`
+
+                                    let port = chrome.runtime.connect({name: "openURL"})
+                                    port.postMessage({url: url})
+                                }}>Syllabi</QuickActionButton>
                             </CustomizedButtonDiv>
                             {courseDescription.map((value, index) => {
                                 return (
