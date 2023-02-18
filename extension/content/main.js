@@ -348,7 +348,7 @@ const parseCourseInfo = (row) => {
     } = separateCourseFullText(courseFullName)
 
     let course = {
-        uid: Number(getCourseText(row, "td[data-th='Unique']")),
+        uid: getCourseText(row, "td[data-th='Unique']"),
         name: name,
         fullName: fullName,
         creditHours: creditHours,
@@ -358,8 +358,9 @@ const parseCourseInfo = (row) => {
         status: getCourseText(row, "td[data-th='Status']"),
     }
 
-    addCourseToStorage(course)
+    // addCourseToStorage(course)
     // console.log(course)
+    return course
 }
 
 const buildCourseObject = (row) => {
@@ -477,7 +478,10 @@ initUserCourseList()
 
 $(".UTRP_button").click(function () {
     let courseRow = $(this).closest("tr")
-    parseCourseInfo(courseRow)
+    // parseCourseInfo(courseRow)
+
+    let port = chrome.runtime.connect({name: "modalCourse"})
+    port.postMessage({modalCourse: parseCourseInfo(courseRow)})
 })
 
 chrome.storage.onChanged.addListener((changes) => {
