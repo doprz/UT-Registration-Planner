@@ -348,7 +348,7 @@ const parseCourseInfo = (row) => {
     } = separateCourseFullText(courseFullName)
 
     let course = {
-        uid: Number(getCourseText(row, "td[data-th='Unique']")),
+        uid: getCourseText(row, "td[data-th='Unique']"),
         name: name,
         fullName: fullName,
         creditHours: creditHours,
@@ -358,8 +358,9 @@ const parseCourseInfo = (row) => {
         status: getCourseText(row, "td[data-th='Status']"),
     }
 
-    addCourseToStorage(course)
+    // addCourseToStorage(course)
     // console.log(course)
+    return course
 }
 
 const buildCourseObject = (row) => {
@@ -408,25 +409,25 @@ const highlightCourseConflicts = (row) => {
         let c2_timeObj = c2.time
 
         if (c2.uid == c1.uid) {
-            row.find("td[data-th='Days']").css("color", "green")
-            row.find("td[data-th='Hour']").css("color", "green")
-            row.find("td[data-th='Room']").css("color", "green")
-            row.find("td[data-th='Instruction Mode']").css("color", "green")
-            row.find("td[data-th='Instructor']").css("color", "green")
-            row.find("td[data-th='Status']").css("color", "green")
-            row.find("td[data-th='Core']").css("color", "green")
+            row.find("td[data-th='Days']").css("cssText", "color: green !important")
+            row.find("td[data-th='Hour']").css("cssText", "color: green !important")
+            row.find("td[data-th='Room']").css("cssText", "color: green !important")
+            row.find("td[data-th='Instruction Mode']").css("cssText", "color: green !important")
+            row.find("td[data-th='Instructor']").css("cssText", "color: green !important")
+            row.find("td[data-th='Status']").css("cssText", "color: green !important")
+            row.find("td[data-th='Core']").css("cssText", "color: green !important")
             continue
         }
 
         // Get every course on the screen
         if (courseDateTimeConflict(c1_timeObj, c2_timeObj)) {
-            row.find("td[data-th='Days']").css("color", "red")
-            row.find("td[data-th='Hour']").css("color", "red")
-            row.find("td[data-th='Room']").css("color", "red")
-            row.find("td[data-th='Instruction Mode']").css("color", "red")
-            row.find("td[data-th='Instructor']").css("color", "red")
-            row.find("td[data-th='Status']").css("color", "red")
-            row.find("td[data-th='Core']").css("color", "red")
+            row.find("td[data-th='Days']").css("cssText", "color: red !important")
+            row.find("td[data-th='Hour']").css("cssText", "color: red !important")
+            row.find("td[data-th='Room']").css("cssText", "color: red !important")
+            row.find("td[data-th='Instruction Mode']").css("cssText", "color: red !important")
+            row.find("td[data-th='Instructor']").css("cssText", "color: red !important")
+            row.find("td[data-th='Status']").css("cssText", "color: red !important")
+            row.find("td[data-th='Core']").css("cssText", "color: red !important")
             // console.warn(`Course Conflict between: \n[${c1.uid}] ${c1_timeObj.regular.hour} and \n[${c2.uid}] ${c2_timeObj.regular.hour}`)
         } else {
             // console.log(`[${c1.uid}] ${c1_timeObj.regular.hour}`)
@@ -477,7 +478,10 @@ initUserCourseList()
 
 $(".UTRP_button").click(function () {
     let courseRow = $(this).closest("tr")
-    parseCourseInfo(courseRow)
+    // parseCourseInfo(courseRow)
+
+    let port = chrome.runtime.connect({name: "modalCourse"})
+    port.postMessage({modalCourse: parseCourseInfo(courseRow)})
 })
 
 chrome.storage.onChanged.addListener((changes) => {
