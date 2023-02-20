@@ -221,7 +221,7 @@ const CSUI = () => {
 
     const handleModal = (course: Course, l_db: any) => {
         setCourse(course)
-        console.log(course)
+        // console.log(course)
         const courseUID = course.uid
         const url = `https://utdirect.utexas.edu/apps/registrar/course_schedule/20232/${courseUID}/`
     
@@ -262,18 +262,18 @@ const CSUI = () => {
             const course_nbr = course.name.match(/.+?(\d{3}[^ ]?)/)[1]
             const cmd = `SELECT * FROM \'agg\' WHERE dept = \'${dept}\' and course_nbr = \'${course_nbr}\' and prof = \'${course.instructor[0]}\'`
             try {
-                console.log(cmd)
-                console.log(l_db)
+                // console.log(cmd)
+                // console.log(l_db)
 
                 const contents = l_db.exec(cmd)
                 if (contents) {
                     if (contents[0]) {
-                        console.log("Showing contents[0]")
-                        console.log(contents[0])
+                        // console.log("Showing contents[0]")
+                        // console.log(contents[0])
                         if (contents[0].values.length > 1) {
-                            console.log("Showing contents[0].values[0]")
-                            console.log(contents[0].values[0])
-                            console.table(contents[0].values[0])
+                            // console.log("Showing contents[0].values[0]")
+                            // console.log(contents[0].values[0])
+                            // console.table(contents[0].values[0])
     
                             let arr = []
                             contents[0].columns.map((n, i) => {
@@ -298,7 +298,7 @@ const CSUI = () => {
     }
 
     React.useEffect(() => {
-        console.log("Modal.js loaded")
+        // console.log("Modal.js loaded")
         let l_db: any = null
 
         // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
@@ -319,21 +319,21 @@ const CSUI = () => {
             .then((db) => {
                 setDb(db)
                 l_db = db
-                console.log("setDb from .then")
-                console.log(db)
+                // console.log("setDb from .then")
+                // console.log(db)
             })
             .catch(err => console.error(err))
 
         chrome.runtime.onMessage.addListener(
             function(request, sender, sendResponse) {
-                console.log(sender.tab ?
-                            "from a content script:" + sender.tab.url :
-                            "from the extension")
-                console.log(`[cs] ${JSON.stringify(request)}`)
+                // console.log(sender.tab ?
+                //             "from a content script:" + sender.tab.url :
+                //             "from the extension")
+                // console.log(`[cs] ${JSON.stringify(request)}`)
 
                 try {
                     if (request.modalCourse) {
-                        console.log("handleModal called")
+                        // console.log("handleModal called")
                         handleModal(request.modalCourse, l_db)
                     }
                 } catch (error) {
@@ -361,15 +361,15 @@ const CSUI = () => {
         })
     }, [])
 
-    React.useEffect(() => {
-        console.log("db updated from useEffect")
-        console.log(db)
-    }, [db])
+    // React.useEffect(() => {
+    //     console.log("db updated from useEffect")
+    //     console.log(db)
+    // }, [db])
 
-    React.useEffect(() => {
-        console.log("gradeDistData updated from useEffect")
-        console.log(gradeDistData)
-    }, [gradeDistData])
+    // React.useEffect(() => {
+    //     console.log("gradeDistData updated from useEffect")
+    //     console.log(gradeDistData)
+    // }, [gradeDistData])
 
     const handleClickSnackbar = (message: string) => {
         setSnackPack((prev) => [...prev, { message, key: new Date().getTime() }])
@@ -497,7 +497,7 @@ const CSUI = () => {
                                     </>
                                 )}
                                 <QuickActionButton tooltip="Rate My Professor" onClick={() => {
-                                    console.log(`RMP button pressed`)
+                                    // console.log(`RMP button pressed`)
                                     course.instructor.map((instructor) => {
                                         const instructorString = instructor.replace(/\s/g, '%20')
                                         const url = `https://www.ratemyprofessors.com/search/teachers?query=${instructorString}&sid=U2Nob29sLTEyNTU=`
@@ -507,7 +507,7 @@ const CSUI = () => {
                                     })
                                 }}>RMP</QuickActionButton>
                                 <QuickActionButton tooltip="Syllabi" onClick={() => {
-                                    console.log(`Syllabi button pressed`)
+                                    // console.log(`Syllabi button pressed`)
                                     const department = course.name.match(/(.+?)\s\d{3}[^ ]?/)[1].replace(/\s/g, '+')
                                     const course_nbr = course.name.match(/.+?(\d{3}[^ ]?)/)[1]
                                     const url = `https://utdirect.utexas.edu/apps/student/coursedocs/nlogon/?year=&semester=&department=${department}&course_number=${course_nbr}&course_title=&unique=${course.uid}&instructor_first=&instructor_last=&course_type=In+Residence&search=Search`
