@@ -36,7 +36,8 @@
     "web_accessible_resources": [
       {
         "resources": [
-          "assets/sql-wasm.wasm"
+          "assets/sql-wasm.wasm",
+          "assets/dark-mode.css"
         ],
         "matches": [
           "<all_urls>"

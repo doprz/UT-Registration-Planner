@@ -1,11 +1,8 @@
 import createCache from "@emotion/cache"
 import { CacheProvider } from "@emotion/react"
 import ScopedCssBaseline from "@mui/material/ScopedCssBaseline"
-import {
-    StyledEngineProvider,
-    ThemeProvider,
-    createTheme
-} from "@mui/material/styles"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery"
 import type { PlasmoRender } from "plasmo"
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
@@ -31,29 +28,47 @@ const cache = createCache({
     container: emotionRoot
 })
 
-const theme = createTheme({
-    components: {
-        MuiPopover: {
-            defaultProps: {
-                container: shadowRootElement
-            }
-        },
-        MuiPopper: {
-            defaultProps: {
-                container: shadowRootElement
-            }
-        },
-        MuiModal: {
-            defaultProps: {
-                container: shadowRootElement
-            }
-        }
-    }
-})
+const RenderWrapper = () => {
+    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
 
-export const render: PlasmoRender = () => {
-    const root = ReactDOM.createRoot(shadowRootElement)
-    root.render(
+    const theme = React.useMemo(
+        () =>
+            createTheme({
+                palette: {
+                    mode: prefersDarkMode ? "dark" : "light",
+                    ...(prefersDarkMode && {
+                        background: {
+                            default: "#222A30",
+                            paper: "#222A30"
+                        },
+                        text: {
+                            primary: "#F7F6F3",
+                            secondary: "#D6D2C4"
+                        }
+                    })
+                },
+                components: {
+                    MuiPopover: {
+                        defaultProps: {
+                            container: shadowRootElement
+                        }
+                    },
+                    MuiPopper: {
+                        defaultProps: {
+                            container: shadowRootElement
+                        }
+                    },
+                    MuiModal: {
+                        defaultProps: {
+                            container: shadowRootElement
+                        }
+                    }
+                }
+            }),
+        [prefersDarkMode]
+    )
+
+    return (
         <React.StrictMode>
             <ScopedCssBaseline />
             <CacheProvider value={cache}>
@@ -63,4 +78,9 @@ export const render: PlasmoRender = () => {
             </CacheProvider>
         </React.StrictMode>
     )
+}
+
+export const render: PlasmoRender = () => {
+    const root = ReactDOM.createRoot(shadowRootElement)
+    root.render(<RenderWrapper />)
 }

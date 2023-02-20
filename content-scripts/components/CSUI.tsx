@@ -6,6 +6,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Chip from '@mui/material/Chip'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { styled } from "@mui/material/styles"
+import { useTheme } from '@mui/material/styles'
 import axios from "axios"
 import * as cheerio from "cheerio"
 import * as React from "react"
@@ -144,8 +145,8 @@ const RenderCourseDetails = ({_course}: {_course: Course}) => {
 
     return (
         <>
-            <Typography variant="h6" component="h3">{`${_course.instructor} | ${_course.status} | ${_course.mode}`}</Typography>
-            <Typography variant="h6" component="h3">
+            <Typography variant="h6" component="h3" sx={{ color: "text.primary" }}>{`${_course.instructor} | ${_course.status} | ${_course.mode}`}</Typography>
+            <Typography variant="h6" component="h3" sx={{ color: "text.primary" }}>
                 {`${_course.time.regular.days} | ${_course.time.regular.hour}${(courseLocationLink_regular && (courseLocationLink_regular !== "n/a")) ? " | " : ""}`}
                 {(courseLocationLink_regular && (courseLocationLink_regular !== "n/a")) && <CustomizedCourseLocationLink onClick={() => {
                     let port = chrome.runtime.connect({name: "openURL"})
@@ -156,7 +157,7 @@ const RenderCourseDetails = ({_course}: {_course: Course}) => {
                 </CustomizedCourseLocationLink>}
             </Typography>
             {_course?.time?.additional && (
-                <Typography variant="h6" component="h3">
+                <Typography variant="h6" component="h3" sx={{ color: "text.primary" }}>
                     {`${_course.time.additional.days} | ${_course.time.additional.hour}${(courseLocationLink_additional && (courseLocationLink_additional !== "n/a")) ? " | " : ""}`}
                     {(courseLocationLink_additional && (courseLocationLink_additional !== "n/a")) && <CustomizedCourseLocationLink onClick={() => {
                         let port = chrome.runtime.connect({name: "openURL"})
@@ -172,6 +173,8 @@ const RenderCourseDetails = ({_course}: {_course: Course}) => {
 }
 
 const CSUI = () => {
+    const theme = useTheme()
+
     const [open, setOpen] = React.useState(false)
     const handleOpen = () => setOpen(true)
     const handleClose = () => {
@@ -436,15 +439,13 @@ const CSUI = () => {
                                 id="modal-modal-title"
                                 variant="h5"
                                 component="h2"
+                                sx={{ color: "text.primary" }}
                                 fontWeight={"bold"}
                                 gutterBottom>
                                 {`${courseName} (${course.uid})`}
                             </Typography>
                             <div className="course-info" style={{display: "flex", gap: "1rem"}}>
                                 <div className="course-details">
-                                    {/* <Typography variant="h6" component="h3">{`${course.instructor} | ${course.status} | ${course.mode}`}</Typography>
-                                    <Typography variant="h6" component="h3">{`${course.time.regular.days} | ${course.time.regular.hour} | ${course.time.regular.room}`}</Typography>
-                                    {course?.time?.additional && (<Typography variant="h6" component="h3">{`${course.time.additional.days} | ${course.time.additional.hour} | ${course.time.additional.room}`}</Typography>)} */}
                                     <RenderCourseDetails _course={course} />
                                 </div>
                                 <div className="course-flags-core" style={{display: "flex", gap: "1rem"}}>
@@ -517,7 +518,7 @@ const CSUI = () => {
                             </CustomizedButtonDiv>
                             {courseDescription.map((value, index) => {
                                 return (
-                                    <Typography id={`modal-modal-description-${index}`} key={index} sx={{ mt: 2 }} variant="body1" gutterBottom>
+                                    <Typography id={`modal-modal-description-${index}`} key={index} sx={{ color: "text.primary", mt: 2 }} variant="body1" gutterBottom>
                                         {value}
                                     </Typography>
                                 )
@@ -526,7 +527,7 @@ const CSUI = () => {
                                 <>
                                     {gradeDistData.length > 0 ? (
                                         <div style={{ paddingTop: "20px" }}>
-                                            <Typography variant="h5" component="h2" gutterBottom>Course Grade Distribution</Typography>
+                                            <Typography variant="h5" component="h2" sx={{ color: "text.primary" }} gutterBottom>Course Grade Distribution</Typography>
                                             <ResponsiveContainer width="100%" aspect={3.0 / 1.0}>
                                                 <BarChart
                                                     data={gradeDistData}
@@ -538,9 +539,17 @@ const CSUI = () => {
                                                     }}
                                                 >
                                                     <CartesianGrid strokeDasharray="3 3" />
-                                                    <XAxis dataKey="name" />
-                                                    <YAxis />
-                                                    <Tooltip wrapperStyle={{ outline: "none" }} />
+                                                    <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+                                                    <YAxis stroke={theme.palette.text.secondary} />
+                                                    <Tooltip
+                                                        wrapperStyle={{ outline: "none" }}
+                                                        contentStyle={{ 
+                                                            backgroundColor: `${theme.palette.mode === "dark" ? "#333F48" : theme.palette.background.default}`
+                                                        }}
+                                                        itemStyle={{
+                                                            color: `${theme.palette.mode === "dark" ? "#FC7300" : "#BF5700"}`
+                                                        }}
+                                                        cursor={{ fill: `${theme.palette.mode === "dark" ? "#333f48bf" : theme.palette.action.hover}` }} />
                                                     <Legend />
                                                     <Bar dataKey="Students" fill="#bf5700" />
                                                 </BarChart>
@@ -548,13 +557,13 @@ const CSUI = () => {
                                         </div>
                                         ) : (
                                             <div style={{ paddingTop: "20px" }}>
-                                                <Typography variant="h5" component="h2">Course Grade Distribution Data Not Found</Typography>
+                                                <Typography variant="h5" component="h2" sx={{ color: "text.primary" }}>Course Grade Distribution Data Not Found</Typography>
                                             </div>
                                     )}
                                 </>
                             ) : (
                                 <div style={{ paddingTop: "20px" }}>
-                                    <Typography variant="h5" component="h2">Loading Course Grade Distribution Database...</Typography>
+                                    <Typography variant="h5" component="h2" sx={{ color: "text.primary" }}>Loading Course Grade Distribution Database...</Typography>
                                     <Skeleton variant="rounded" animation="wave" height={256} />
                                 </div>
                             )}

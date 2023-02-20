@@ -20,7 +20,7 @@
     "options_page": "options.html",
     "permissions": ["storage"],
     "web_accessible_resources": [{
-        "resources": ["content/assets/sql-wasm.wasm"],
+        "resources": ["content/assets/sql-wasm.wasm", "content/assets/dark-mode.css"],
         "matches": ["<all_urls>"]
     }],
     "background": {
@@ -29,7 +29,7 @@
     "content_scripts": [
         {
             "matches": ["https://utdirect.utexas.edu/apps/registrar/course_schedule/*"],
-            "js": ["content/lib/jquery-3.6.0.min.js", "content/main.js", "content/csui.js"]
+            "js": ["content/lib/jquery-3.6.0.min.js", "content/main.js", "content/csui.js", "content/system-preference-theme.js"]
         }
     ]
 }
