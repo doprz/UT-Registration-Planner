@@ -5,71 +5,26 @@
 ## About
 UT Registration Planner is a Chrome Extension designed to improve the course registration process at The University of Texas at Austin.
 
-### Table of Contents
-- [Built With](#built-with)
-- [Getting Started](#getting-started)
-- [Standards and Guidelines](standards-and-guidelines)
-- [Next.js](#nextjs)
-    - [Prerequisites](#prerequisites)
-    - [Recommended Workflow](#recommended-workflow)
-    - [Installation and Running Dev Server](#installation-and-running-dev-server)
-- [Chrome Extension](#chrome-extension)
-    - [Recommended Workflow](#recommended-workflow-1)
-    - [Important!](#important)
+## Features
+Course registration doesn't have to feel like shopping for Black Friday anymore.
 
-## Built With
-* Next.js
-* TypeScript
-* JavaScript
-* Sass/SCSS
-* Material UI
+UT Registration Planner features automatic course conflict highlighting and a modern UI for a fast and intuitive experience registering for courses while featuring a full light or dark mode theme based on your system preference.
 
-## Getting Started
-UT Registration Planner is composed of 2 main sections. The Next.js and Chrome Extension folder.
-Depending on what part of the project you want to contribute to will determine your workflow.
+Clicking the `UTRP` button will open a modal that shows course information such as:
+- Instructors
+- Times
+- Locations (with a link to the location which opens in a new tab)
+- Flags
+- Requirements
+- Grade distributions
+- Rate My Professor link
+- Access Syllabi and CVs link
+- and more!
 
-## Standards and Guidelines
-In order for UT Registration Planner to maintain a clean and organized codebase, we follow certain styles which are enforced by [Prettier](https://prettier.io/docs/en/install.html) and the `prettier-vscode` VS Code extension called **"Prettier - Code formatter"**.
+The quick actions bar opens commonly used tabs for registration with a single click and each course card displays course info at a glance while expanding to show more information or to copy the course unique ID for easy sharing.
 
-> Note: You will need to select which code formatter VS Code wants to use (It will prompt you to choose).
+The course list calendar shows your color coded schedule at a glance and features links to course locations to help you plan out your schedule efficiently.
 
----
-
-## Next.js
-
-### Prerequisites
-- Node.js `18.3.0`
-
-### Recommended Workflow
-The Next.js section of this project is located under the `ut-registration-planner` folder. Open up VS Code and open the UT Registration Planner project root with `File > Open Folder...` `UT Registration Planner`.
-
-Then open up the integrated terminal in VS Code and navigate to the `ut-registration-planner`folder.
-```bash
-cd ut-registration-planner
-```
-
-### Installation and Running Dev Server
-Install npm packages and dependencies
-```bash
-npm install
-```
-Run the development server
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
----
-
-## Chrome Extension
-
-### Recommended Workflow
-The Chrome Extension section of this project is located under the `extension` folder. Open up VS Code and open the UT Registration Planner project root with `File > Open Folder...` `UT Registration Planner`.
-
-1. Head over to [chrome://extensions](chrome://extensions) in a new chrome profile (recommended to prevent conflicts).
-2. Enable **Developer Mode**
-3. Click the **Load Unpacked** button
-4. Select the `UT Registration Planner/extension` folder
-
-### Important!
-You will have to navigate to [chrome://extensions](chrome://extensions) and refresh the UT Registration Planner Chrome Extension and the pages it affects after every change for the changes to take effect. 
+![UT Registration Planner Example1](images/UT-Registration-Planner_Example1.png)
+![UT Registration Planner Example2](images/UT-Registration-Planner_Example2.png)
+![UT Registration Planner Example3](images/UT-Registration-Planner_Example3.png)

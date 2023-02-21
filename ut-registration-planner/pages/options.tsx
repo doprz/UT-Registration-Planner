@@ -3,14 +3,13 @@ import Head from "next/head"
 import Image from "next/image"
 
 import React, { useState, useEffect } from "react"
-
+import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles"
 import NavigationRail from "../components/NavigationRail"
 
 import styles from "../styles/options.module.scss"
 import { styled } from '@mui/material/styles'
 
 import { getStorage, setStorage } from "../utils/chromeStorage"
-
 
 interface CourseDateTimeObj {
     regular: {
@@ -103,20 +102,35 @@ const courseColors = [
     ["#d6d2c480", "#d6d2c4"],
     ["#333f4880", "#333f48"],
 ]
+const courseColors_dark = [
+    ["#f8971f40", "#f8971fbf"],
+    ["#ffd60040", "#ffd600bf"],
+    ["#a6cd5740", "#a6cd57bf"],
+    ["#00a9b740", "#00a9b7bf"],
+    ["#005f8640", "#005f86bf"],
+    ["#579d4240", "#579d42bf"],
+
+    ["#9cadb740", "#9cadb7bf"],
+    ["#d6d2c440", "#d6d2c4bf"],
+    ["#333f4840", "#333f48bf"],
+]
 
 const CourseCardEvent = styled("div", {
     shouldForwardProp: (prop) => prop !== "gridArea" && prop !== "colorIndex",
-})<{ gridArea: string; colorIndex: number }>(({ gridArea, colorIndex }) => ({
+})<{ gridArea: string; colorIndex: number }>(({ gridArea, colorIndex, theme }) => ({
     gridArea: gridArea,
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
     zIndex: 2,
+    overflowY: "hidden",
     padding: "0.25rem",
     marginBottom: "2px",
     marginRight: "2px",
-    backgroundColor: courseColors[colorIndex % courseColors.length][0],
-    borderLeft: `5px solid ${courseColors[colorIndex % courseColors.length][1]}`,
+    // backgroundColor: courseColors[colorIndex % courseColors.length][0],
+    // borderLeft: `5px solid ${courseColors[colorIndex % courseColors.length][1]}`,
+    backgroundColor: theme.palette.mode === "light" ? courseColors[colorIndex % courseColors.length][0] : courseColors_dark[colorIndex % courseColors.length][0],
+    borderLeft: `5px solid ${theme.palette.mode === "light" ? courseColors[colorIndex % courseColors.length][1] : courseColors_dark[colorIndex % courseColors.length][1]}`,
     // backgroundColor: "hsla(195, 53%, 79%, 75%)",
     // borderLeft: "5px solid hsl(195, 53%, 39%)",
     borderRadius: "5px",
@@ -253,7 +267,6 @@ const renderCourseCardEvent = (course: Course, colorIndex: number) => {
 }
 
 const Options: NextPage = () => {
-
     const [userCourseList, setUserCourseList] = useState<Course[]>([])
 
     useEffect(() => {
@@ -269,6 +282,11 @@ const Options: NextPage = () => {
             }
         }
         getUserCourseList()
+
+        chrome.storage.onChanged.addListener((changes) => {
+            // console.log(changes)
+            getUserCourseList()
+        })
 
         // When userCourseList is put in the [], it causes this component to re-render infinitely
         // console.log("useEffect, []")

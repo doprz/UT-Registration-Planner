@@ -1,0 +1,163 @@
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color-primary: #111518;
+        --bg-color-secondary: #191f24;
+        --bg-color-3: #222a30;
+        --bg-color-4: #2a343c;
+        --bg-color-5: #333f48;
+
+        --text-color-primary: #f7f6f3;
+        --text-color-secondary: #d6d2c4;
+
+        --header-green: #84ad34;
+        --link-color: #0084b8;
+        --link-color-orange: #fc7300;
+    }
+
+    html,
+    body {
+        color-scheme: dark;
+        background-color: var(--bg-color-primary);
+    }
+
+    h1 {
+        color: var(--header-green);
+    }
+
+    h2 {
+        color: var(--text-color-primary);
+    }
+
+    body a:link,
+    body a:visited {
+        color: var(--link-color);
+    }
+
+    .search_title {
+        background: var(--bg-color-3);
+        border: 0;
+        margin: 20px auto 6px;
+    }
+
+    #container {
+        background-color: var(--bg-color-primary);
+    }
+
+    #search_area {
+        background-color: var(--bg-color-secondary);
+    }
+
+    #small_search h2 {
+        color: var(--text-color-primary);
+    }
+
+    #filter {
+        background-color: var(--bg-color-3);
+        border: 1px solid var(--bg-color-5);
+    }
+
+    #registration_info {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1rem;
+    }
+
+    #registration_info .gobutton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: 0;
+        margin: 0;
+        background: var(--bg-color-3);
+        border: 1px solid var(--bg-color-5);
+        border-radius: 10px;
+    }
+
+    #registration_info .gobutton a {
+        height: auto;
+        padding: 0;
+        margin: 0;
+        color: var(--link-color);
+        background: var(--bg-color-3);
+    }
+
+    #textbook_button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background: var(--bg-color-3);
+        border: 1px solid var(--bg-color-5);
+        border-radius: 10px;
+    }
+
+    #textbook_button a:link {
+        height: auto;
+        padding: 0;
+        margin: 0;
+        color: var(--link-color);
+        background: var(--bg-color-3);
+    }
+
+    #kw_results_table td,
+    td.course_header {
+        background: var(--bg-color-secondary);
+    }
+
+    th {
+        color: var(--text-color-primary);
+        background-color: var(--bg-color-3);
+
+        border-bottom: 2px solid var(--bg-color-5);
+        margin: 0 3px 0 1px;
+    }
+
+    .fa {
+        color: var(--text-color-primary);
+    }
+
+    .rwd-table tr {
+        border-top: 1px solid var(--bg-color-5);
+    }
+
+    .rwd-table tr,
+    td {
+        border-bottom: 1px solid var(--bg-color-5);
+    }
+
+    td {
+        color: var(--text-color-secondary);
+        background-color: var(--bg-color-3);
+    }
+
+    tr.unavailable > td {
+        background-color: var(--bg-color-4);
+    }
+
+    td:not(.UTRP_button) {
+        color: var(--text-color-primary) !important;
+    }
+
+    td[data-th="Unique"] a,
+    td.UTRP_button {
+        color: var(--link-color-orange) !important;
+    }
+
+    #details p {
+        color: var(--text-color-secondary);
+    }
+
+    #footer_stripe {
+        background-color: var(--bg-color-primary);
+    }
+
+    #footer {
+        background-color: var(--bg-color-secondary);
+    }
+
+    #footer ul,
+    #footer li a {
+        color: var(--text-color-secondary);
+    }
+}
