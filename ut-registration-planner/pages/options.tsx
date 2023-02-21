@@ -283,6 +283,11 @@ const Options: NextPage = () => {
         }
         getUserCourseList()
 
+        chrome.storage.onChanged.addListener((changes) => {
+            // console.log(changes)
+            getUserCourseList()
+        })
+
         // When userCourseList is put in the [], it causes this component to re-render infinitely
         // console.log("useEffect, []")
     }, [])
