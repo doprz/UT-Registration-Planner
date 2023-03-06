@@ -223,7 +223,10 @@ const CSUI = () => {
         setCourse(course)
         // console.log(course)
         const courseUID = course.uid
-        const url = `https://utdirect.utexas.edu/apps/registrar/course_schedule/20232/${courseUID}/`
+
+        const semesterCodeURL = window.location.href
+        const semesterCode = semesterCodeURL.match(/.*utdirect.utexas.edu\/apps\/registrar\/course_schedule\/(\d+).*/)[1]
+        const url = `https://utdirect.utexas.edu/apps/registrar/course_schedule/${semesterCode}/${courseUID}/`
     
         axios.get(url).then(({ data }) => {
             const $ = cheerio.load(data)
