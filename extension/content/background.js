@@ -82,3 +82,24 @@ chrome.runtime.onConnect.addListener(function (port) {
         }
     })
 })
+
+const getUserCourseList = async () => {
+    try {
+        return userCourseList = await getStorage("userCourseList")
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+chrome.storage.onChanged.addListener(async (changes) => {
+    // console.log(changes)
+    userCourseList = await getUserCourseList()
+    courses = userCourseList.length ? `${userCourseList.length}` : undefined
+
+    if (userCourseList && courses) {
+        chrome.action.setBadgeBackgroundColor({ color: "#bf5700" })
+        chrome.action.setBadgeText({ text: courses })
+    } else {
+        chrome.action.setBadgeText({ text: "" })
+    }
+})
