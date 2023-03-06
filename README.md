@@ -10,6 +10,8 @@ Course registration doesn't have to feel like shopping for Black Friday anymore.
 
 UT Registration Planner features automatic course conflict highlighting and a modern UI for a fast and intuitive experience registering for courses while featuring a full light or dark mode theme based on your system preference.
 
+[Note]: Please be mindful of other extensions that modify the course registration page as it may cause undesired behavior.
+
 Clicking the `UTRP` button will open a modal that shows course information such as:
 - Instructors
 - Times
