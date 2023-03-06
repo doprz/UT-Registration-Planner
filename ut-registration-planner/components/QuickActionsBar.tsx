@@ -35,7 +35,7 @@ const QuickActionsBar = (props: Props) => {
                     tooltip="Search"
                     onClick={() =>
                         openNewTab(
-                            "https://utdirect.utexas.edu/apps/registrar/course_schedule/20232"
+                            "https://utdirect.utexas.edu/apps/registrar/course_schedule/20239"
                         )
                     }
                 >
