@@ -2,6 +2,13 @@
 
 ![UT Registration Planner Repo Banner](images/UT-Registration-Planner_repo-banner.png)
 
+## Deprecation Notice
+This repository has been deprecated and is no longer actively maintained. Development has moved to: https://github.com/Longhorn-Developers/UT-Registration-Plus
+
+Please visit the new repository for the latest updates, features, and bug fixes. All future development will take place in the new location.
+
+Thank you for your interest in this project!
+
 ## About
 UT Registration Planner is a Chrome Extension designed to improve the course registration process at The University of Texas at Austin.
 
